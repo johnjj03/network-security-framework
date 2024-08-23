@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCAP File Analyzer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Upload a PCAP File for Analysis</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="POST" action="" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm" id="pcapForm">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Choose a file:</label>
+                        <input type="file" name="file" id="file" class="form-control" accept=".pcap,.pcapng">
+                    </div>
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-info" id="visualizeBtn" disabled>
+                            Visualize Packet Rates
+                        </button>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning" id="detectBtn" disabled>
+                            Detect DDoS Attack
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script>
+        document.getElementById('file').addEventListener('change', function () {
+            const fileInput = this;
+            const filePath = fileInput.value;
+            const allowedExtensions = /(\.pcap|\.pcapng)$/i;
+            const visualizeBtn = document.getElementById('visualizeBtn');
+            const detectBtn = document.getElementById('detectBtn');
+
+            if (fileInput.files.length > 0 && allowedExtensions.test(filePath)) {
+                visualizeBtn.disabled = false;
+                detectBtn.disabled = false;
+            } else {
+                visualizeBtn.disabled = true;
+                detectBtn.disabled = true;
+                alert('Please select a valid .pcap or .pcapng file.');
+            }
+        });
+
+        // Change form action based on button clicked
+        document.getElementById('visualizeBtn').addEventListener('click', function () {
+            document.getElementById('pcapForm').action = '/visualize';
+        });
+
+        document.getElementById('detectBtn').addEventListener('click', function () {
+            document.getElementById('pcapForm').action = '/detect';
+        });
+    </script>
+</body>
+
+</html>
