@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 import os
 from analysis import *
 from visualisation import *
-import time
+from malware import *
 
 app = Flask(__name__)
 
@@ -10,7 +10,7 @@ app = Flask(__name__)
 PCAP_FOLDER = r'C:\Users\johng\Documents\College\Capstone\Framework\static\uploads'
 GRAPH_FOLDER = r'C:\Users\johng\Documents\College\Capstone\Framework\static\graphs'
 app.config['PCAP_FOLDER'] = PCAP_FOLDER
-app.config['GRAPH_FOLDER'] =GRAPH_FOLDER
+app.config['GRAPH_FOLDER'] = GRAPH_FOLDER
 app.config['STATIC_FOLDER'] = 'static'
 
 # Define allowed file extensions
@@ -36,6 +36,10 @@ def serve_image():
         return send_from_directory(app.config['STATIC_FOLDER'], image_path)
     else:
         return 'No image found', 404
+
+@app.route('/results/<path:filename>')
+def download_file(filename):
+    return send_from_directory('.', filename)
 
 @app.route('/detect', methods=['POST'])
 def upload_file():
@@ -86,7 +90,24 @@ def graph():
     image_path = session.get('image_path')
     return render_template('graph.html', image_path=image_path)
 
+@app.route('/malware', methods=['POST'])
+def malware():
+    if 'file' not in request.files:
+        return redirect(request.url)
+    file = request.files['file']
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        filename_with_path = os.path.join(app.config['PCAP_FOLDER'], filename)
+        file.save(filename_with_path)
+        results = analyze_malware(filename_with_path)
+        session['results'] = results
+        return redirect(url_for('malware_results'))
+    else:
+        return 'Invalid file'
 
+@app.route('/malware_results')
+def malware_results():
+    return render_template('malware_results.html')
 
 
 if __name__ == '__main__':

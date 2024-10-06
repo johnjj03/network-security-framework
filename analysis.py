@@ -48,7 +48,7 @@ def detect_dos(packets):
 
         except Exception as e:
             return f"Error: {e}"
-    return "No DoS detected"
+    return "No DoS and DDoS detected"
 
 def detect_ddos(packets):
     unique_src_ips = set()

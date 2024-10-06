@@ -24,11 +24,15 @@
                             Visualize Packet Rates
                         </button>
                     </div>
-                    <div class="d-grid">
+                    <div class="d-grid mb-3">
                         <button type="submit" class="btn btn-warning" id="detectBtn" disabled>
                             Detect DDoS Attack
                         </button>
                     </div>
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-danger" id="malwareBtn" disabled>
+                            Malware Detection
+                    </div>  
                 </form>
             </div>
         </div>
@@ -43,13 +47,16 @@
             const allowedExtensions = /(\.pcap|\.pcapng)$/i;
             const visualizeBtn = document.getElementById('visualizeBtn');
             const detectBtn = document.getElementById('detectBtn');
+            const malwareBtn = document.getElementById('malwareBtn');
 
             if (fileInput.files.length > 0 && allowedExtensions.test(filePath)) {
                 visualizeBtn.disabled = false;
                 detectBtn.disabled = false;
+                malwareBtn.disabled = false;
             } else {
                 visualizeBtn.disabled = true;
                 detectBtn.disabled = true;
+                malwareBtn.disabled = true;
                 alert('Please select a valid .pcap or .pcapng file.');
             }
         });
@@ -61,6 +68,10 @@
 
         document.getElementById('detectBtn').addEventListener('click', function () {
             document.getElementById('pcapForm').action = '/detect';
+        });
+
+        document.getElementById('malwareBtn').addEventListener('click', function () {
+            document.getElementById('pcapForm').action = '/malware';
         });
     </script>
 </body>
