@@ -9,7 +9,7 @@ import time
 import sys
 
 
-GRAPH_FOLDER = r'C:\Users\johng\Documents\College\Capstone\Framework\static\graphs'
+GRAPH_FOLDER = r'.\static\graphs'
 
 # Load pcap file
 def plot_packet_rate(file_name):
@@ -36,7 +36,14 @@ def plot_packet_rate(file_name):
     counts = list(counts)
 
     # Calculate packet rates
-    rates = [count / ((timestamps[i+1] - timestamps[i]) or 1) for i, count in enumerate(counts[:-1])]
+    rates = []
+    for i, count in enumerate(counts[:-1]):
+        time_diff = timestamps[i+1] - timestamps[i]
+        if time_diff > 0:
+            rate = count / time_diff
+        else:
+            rate = 0  # Avoid negative or zero time difference
+        rates.append(rate)
 
     # Plot packet rates over time
     plt.plot(timestamps[:-1], rates)
@@ -61,4 +68,3 @@ if __name__ == "__main__":
     else:
         file_name = sys.argv[1]
         plot_packet_rate(file_name)
-    
